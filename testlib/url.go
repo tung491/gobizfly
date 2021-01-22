@@ -8,7 +8,7 @@ func LoadBalancerURL(path string) string {
 	return "/api/loadbalancers" + path
 }
 
-func AlertURL(path string) string {
+func CloudWatcherURL(path string) string {
 	return "/api/alert" + path
 }
 
@@ -22,4 +22,8 @@ func AuthURL(path string) string {
 
 func K8sURL(path string) string {
 	return "/api/kubernetes-engine" + path
+}
+
+func RegistryURL(path string) string {
+	return "/api/container-registry" + path
 }

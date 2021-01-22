@@ -30,6 +30,7 @@ import (
 )
 
 const (
+	defaultAuthType         = "token"
 	version                 = "0.0.1"
 	ua                      = "bizfly-client-go/" + version
 	defaultAPIURL           = "https://manage.bizflycloud.vn/api"
@@ -37,9 +38,10 @@ const (
 	loadBalancerServiceName = "load_balancer"
 	serverServiceName       = "cloud_server"
 	autoScalingServiceName  = "auto_scaling"
-	alertServiceName        = "alert"
+	cloudwatcherServiceName = "alert"
 	authServiceName         = "auth"
 	kubernetsServiceName    = "kubernetes_engine"
+	containerRegistryName   = "container-registry"
 )
 
 var (
@@ -54,7 +56,7 @@ var (
 // Client represents BizFly API client.
 type Client struct {
 	AutoScaling      AutoScalingService
-	Alert            AlertService
+	CloudWatcher     CloudWatcherService
 	Token            TokenService
 	LoadBalancer     LoadBalancerService
 	Listener         ListenerService
@@ -62,6 +64,7 @@ type Client struct {
 	Member           MemberService
 	HealthMonitor    HealthMonitorService
 	KubernetesEngine KubernetesEngineService
+	Container        ContainerRegistryService
 
 	Snapshot SnapshotService
 
@@ -77,6 +80,7 @@ type Client struct {
 	userAgent     string
 	keystoneToken string
 	authMethod    string
+	authType      string
 	username      string
 	password      string
 	appCredID     string
@@ -160,7 +164,7 @@ func NewClient(options ...Option) (*Client, error) {
 	}
 
 	c.AutoScaling = &autoscalingService{client: c}
-	c.Alert = &alertService{client: c}
+	c.CloudWatcher = &cloudwatcherService{client: c}
 	c.Snapshot = &snapshot{client: c}
 	c.Token = &token{client: c}
 	c.LoadBalancer = &loadbalancer{client: c}
@@ -174,6 +178,7 @@ func NewClient(options ...Option) (*Client, error) {
 	c.Firewall = &firewall{client: c}
 	c.SSHKey = &sshkey{client: c}
 	c.KubernetesEngine = &kubernetesEngineService{client: c}
+	c.Container = &containerRegistry{client: c}
 	return c, nil
 }
 
@@ -207,9 +212,16 @@ func (c *Client) NewRequest(ctx context.Context, method, serviceName string, url
 	req.Header.Add("User-Agent", c.userAgent)
 	req.Header.Add("X-Tenant-Name", c.tenantName)
 	req.Header.Add("X-Tenant-Id", c.tenantID)
+
+	if c.authType == "" {
+		c.authType = defaultAuthType
+	}
+
 	if c.keystoneToken != "" {
 		req.Header.Add("X-Auth-Token", c.keystoneToken)
 	}
+
+	req.Header.Add("X-Auth-Type", c.authType)
 	return req, nil
 }
 

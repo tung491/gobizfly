@@ -51,8 +51,8 @@ func setup() {
 			Region:        testRegion,
 		},
 		{
-			Name:          "Alert",
-			CanonicalName: alertServiceName,
+			Name:          "CloudWatcher",
+			CanonicalName: cloudwatcherServiceName,
 			ServiceUrl:    serverTest.URL + "/api/alert",
 			Region:        testRegion,
 		},
@@ -72,6 +72,12 @@ func setup() {
 			Name:          "Kubernetes",
 			CanonicalName: kubernetsServiceName,
 			ServiceUrl:    serverTest.URL + "/api/kubernetes-engine",
+			Region:        testRegion,
+		},
+		{
+			Name:          "Container Registry",
+			CanonicalName: containerRegistryName,
+			ServiceUrl:    serverTest.URL + "/api/container-registry",
 			Region:        testRegion,
 		},
 	}

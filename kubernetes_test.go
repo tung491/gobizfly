@@ -170,7 +170,6 @@ func TestClusterCreate(t *testing.T) {
   ]
 }
 
-Parameter content type
 `
 		_, _ = fmt.Fprint(w, resp)
 	})
